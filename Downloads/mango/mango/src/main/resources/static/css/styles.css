@@ -1,0 +1,49 @@
+:root {
+    --primary-green: #2E8B57;
+    --dark-green: #1E5631;
+    --light-green: #E8F5E8;
+    --mango-orange: #FF8C00;
+    --mango-light: #FFA500;
+    --neutral-white: #FFFFFF;
+    --neutral-light: #F8F9FA;
+    --neutral-gray: #6C757D;
+    --text-dark: #343A40;
+    --border-light: #DEE2E6;
+}
+
+body {
+    background-color: var(--neutral-light);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar-custom {
+    background-color: var(--dark-green) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-bottom: 3px solid var(--mango-orange);
+}
+
+.navbar-brand h2 {
+    color: var(--neutral-white) !important;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.navbar-brand {
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.navbar-brand:hover {
+    opacity: 0.9;
+}
+
+.footer-custom {
+    background-color: var(--dark-green);
+    border-top: 3px solid var(--mango-orange);
+    margin-top: auto;
+}
+
+.text-cream {
+    color: var(--neutral-white) !important;
+}

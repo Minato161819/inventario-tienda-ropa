@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <div th:replace="~{main :: navbar}"></div>
+
+    <main class="flex-grow-1">
+        <div class="container my-5">
+            <div class="card card-custom-form">
+                <div class="card-header card-header-custom text-center">
+                    <h1 th:text="${proveedor.id} ? 'Editar coche' : 'Nuevo coche'" class="mb-0"
+                        style="color: white;"></h1>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/coches}" th:object="${coche}" method="post">
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold" style="color: #1E5631;">Marca</label>
+                                <input type="text" th:field="*{nombre}" class="form-control form-control-custom"
+                                    placeholder="Ingrese el nombre del coche" required>
+                                <div th:if="${#fields.hasErrors('nombre')}" class="text-danger mt-1"
+                                    th:errors="*{nombre}"></div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold" style="color: #1E5631;">Modelo</label>
+                                <input type="text" th:field="*{contacto}" class="form-control form-control-custom"
+                                    placeholder="Escribe el modelo" required>
+                            </div>
+                        </div>
+
+<!--                        <div class="row">-->
+<!--                            <div class="col-md-6 mb-3">-->
+<!--                                <label class="form-label fw-semibold" style="color: #1E5631;">Año de Fabricación</label>-->
+<!--                                <input type="date" th:field="*{tipo_mango}" class="form-control form-control-custom"-->
+<!--                                       placeholder="Selecciona la fecha de fabricación" required>-->
+<!--                            </div>-->
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold" style="color: #1E5631;">Tipo de carrocereia</label>
+                                <select th:field="*{tipo_mango}" class="form-control form-control-custom" required>
+                                    <option value="" selected>Seleccione el tipo de carroceria</option>
+                                    <option value="Tommy Atkins">Coupé</option>
+                                    <option value="Ataulfo">Convertible</option>
+                                    <option value="Keitt">Sedán</option>
+                                    <option value="Kent">SUV</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" style="border-color: #DEE2E6;">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="fw-bold" style="color: #2E8B57;">Almacén de coches</h4>
+                            <button type="button" class="btn btn-mango-secondary" onclick="agregarAlmacen()">
+                                Agregar coche
+                            </button>
+                        </div>
+
+                        <div id="mangos" class="mb-4">
+                            <div th:each="tel, iterStat : *{mangos}" class="card mb-3 almacen-item">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-3 mb-2">
+                                            <label class="form-label fw-semibold small">Tipo de Motor</label>
+                                            <select th:field="*{mangos[__${iterStat.index}__].tipoMotor}"
+                                                    class="form-select form-select-sm" required>
+                                                <option value="" disabled selected>Seleccione un tipo de motor</option>
+                                                <option value="V6">V6</option>
+                                                <option value="V8">V8</option>
+                                                <option value="V12">V12</option>
+                                                <option value="Eléctrico">Eléctrico</option>
+                                                <option value="Híbrido">Híbrido</option>
+
+                                        </div>
+
+                                        <div class="col-md-3 mb-2">
+                                            <label class="form-label fw-semibold small">Tipo Mango</label>
+                                            <select th:field="*{mangos[__${iterStat.index}__].tipo_mango}"
+                                                class="form-control form-control-sm" required>
+                                                <option value="" selected>Seleccione tipo</option>
+                                                <option value="Tommy Atkins">Tommy Atkins</option>
+                                                <option value="Ataulfo">Ataulfo</option>
+                                                <option value="Keitt">Keitt</option>
+                                                <option value="Kent">Kent</option>
+                                                <option value="Haden">Haden</option>
+                                                <option value="Criollo">Criollo</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <label class="form-label fw-semibold small">Fecha Ingreso</label>
+                                            <input type="date" th:field="*{mangos[__${iterStat.index}__].fecha_ingreso}"
+                                                class="form-control form-control-sm" required>
+                                        </div>
+                                        <div class="col-md-2 mb-2">
+                                            <label class="form-label fw-semibold small">Fecha Vencimiento</label>
+                                            <input type="date"
+                                                th:field="*{mangos[__${iterStat.index}__].fecha_vencimiento}"
+                                                class="form-control form-control-sm" required>
+                                        </div>
+                                        <div class="col-md-1 text-center">
+                                            <button type="button" class="btn btn-danger-custom btn-sm"
+                                                onclick="eliminarAlmacen(this)">
+                                                Eliminar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-3 justify-content-end pt-3 border-top">
+                            <button type="submit" class="btn btn-mango">
+                                Guardar coche
+                            </button>
+                            <a th:href="@{/proveedores}" class="btn btn-secondary-custom">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{main :: footer}"></div>
+
+    <script>
+        function agregarAlmacen() {
+    const container = document.getElementById('mangos');
+    const index = container.children.length;
+    const html = `
+        <div class="card mb-3 almacen-item">
+            <div class="card-body">
+                <div class="row align-items-center">
+
+                    <!-- Tipo de motor -->
+                    <div class="col-md-3 mb-2">
+                        <label class="form-label fw-semibold small">Tipo de motor</label>
+                        <select name="mangos[${index}].tipoMotor" class="form-control form-control-sm" required>
+                            <option value="" selected>Seleccione tipo</option>
+                            <option value="V6">V6</option>
+                            <option value="V8">V8</option>
+                            <option value="V12">V12</option>
+                            <option value="Eléctrico">Eléctrico</option>
+                            <option value="Híbrido">Híbrido</option>
+                        </select>
+                    </div>
+
+                    <!-- Potencia -->
+                    <div class="col-md-3 mb-2">
+                        <label class="form-label fw-semibold small">Potencia</label>
+                        <input type="number" name="mangos[${index}].potencia"
+                            class="form-control form-control-sm" placeholder="HP" min="0" required>
+                    </div>
+
+                    <!-- Cilindrada -->
+                    <div class="col-md-3 mb-2">
+                        <label class="form-label fw-semibold small">Cilindrada</label>
+                        <input type="number" name="mangos[${index}].cilindrada"
+                            class="form-control form-control-sm" placeholder="CC" min="0" required>
+                    </div>
+
+                    <!-- Botón eliminar -->
+                    <div class="col-md-3 text-end">
+                        <button type="button" class="btn btn-danger-custom btn-sm" onclick="eliminarAlmacen(this)">
+                            Eliminar
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>`;
+    container.insertAdjacentHTML('beforeend', html);
+}
+
+function eliminarAlmacen(btn) {
+    btn.closest('.almacen-item').remove();
+}
+    </script>
+
+    <style>
+
+        .footer-custom {
+       background: linear-gradient(90deg, #1565C0, #1E88E5); /* degradado azul */
+       border-top: 3px solid #0D47A1; /* línea azul oscuro superior */
+       color: #E3F2FD; /* texto azul muy claro */
+       padding: 1.5rem 0;
+   }
+
+   .footer-custom img {
+       filter: brightness(0) invert(1); /* hace que el logo se vea blanco si es oscuro */
+       opacity: 0.9;
+       transition: opacity 0.3s ease;
+   }
+
+   .footer-custom img:hover {
+       opacity: 1;
+   }
+
+   .footer-custom p {
+       color: #E3F2FD; /* texto en azul claro */
+       font-weight: 500;
+   }
+
+       .navbar-custom {
+       background-color: #1565C0 !important;
+       border-bottom: 3px solid #0D47A1 !important;
+       }
+       :root {
+       --primary-blue: #1E88E5;
+       --dark-blue: #1565C0;
+       --light-blue: #BBDEFB;
+       --neutral-white: #FFFFFF;
+       --neutral-gray: #6C757D;
+       --border-light: #D0D7DE;
+       }
+
+       /* --- CARD --- */
+       .card-custom-form {
+           border: 1px solid var(--border-light);
+           border-radius: 12px;
+           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+           background: var(--neutral-white);
+           overflow: hidden;
+       }
+
+       /* --- HEADER --- */
+       .card-header-custom {
+           background-color: var(--primary-blue);
+           border-bottom: 2px solid var(--dark-blue);
+           padding: 1.5rem;
+           color: var(--neutral-white);
+       }
+
+       /* --- FORM CONTROLS --- */
+       .form-control-custom {
+           border: 1px solid var(--border-light);
+           border-radius: 6px;
+           padding: 10px;
+           transition: all 0.3s ease;
+       }
+
+       .form-control-custom:focus {
+           border-color: var(--primary-blue);
+           box-shadow: 0 0 0 0.1rem rgba(30, 136, 229, 0.2);
+       }
+
+       /* --- BUTTONS --- */
+       .btn-mango {
+           background-color: var(--primary-blue);
+           border: 1px solid var(--primary-blue);
+           color: var(--neutral-white);
+           padding: 10px 20px;
+           border-radius: 6px;
+           font-weight: 600;
+           transition: all 0.3s ease;
+       }
+
+       .btn-mango:hover {
+           background-color: var(--dark-blue);
+           border-color: var(--dark-blue);
+           color: var(--neutral-white);
+       }
+
+       .btn-mango-secondary {
+           background-color: var(--light-blue);
+           border: 1px solid var(--light-blue);
+           color: var(--dark-blue);
+           padding: 8px 16px;
+           border-radius: 6px;
+           font-weight: 600;
+           transition: all 0.3s ease;
+       }
+
+       .btn-mango-secondary:hover {
+           background-color: var(--primary-blue);
+           border-color: var(--primary-blue);
+           color: var(--neutral-white);
+       }
+
+       .btn-secondary-custom {
+           background-color: var(--neutral-gray);
+           border: 1px solid var(--neutral-gray);
+           color: var(--neutral-white);
+           padding: 10px 20px;
+           border-radius: 6px;
+           font-weight: 600;
+           transition: all 0.3s ease;
+       }
+
+       .btn-secondary-custom:hover {
+           background-color: #5a6268;
+           border-color: #5a6268;
+           color: var(--neutral-white);
+       }
+
+       /* --- DANGER BUTTON --- */
+       .btn-danger-custom {
+           background-color: #E53935;
+           border: 1px solid #E53935;
+           color: var(--neutral-white);
+           padding: 6px 12px;
+           border-radius: 4px;
+           font-weight: 500;
+           font-size: 0.875rem;
+           transition: all 0.3s ease;
+       }
+
+       .btn-danger-custom:hover {
+           background-color: #C62828;
+           border-color: #C62828;
+           color: var(--neutral-white);
+       }
+
+       /* --- ITEM HOVER --- */
+       .almacen-item {
+           border: 1px solid var(--border-light);
+           border-radius: 8px;
+           transition: all 0.3s ease;
+       }
+
+       .almacen-item:hover {
+           border-color: var(--primary-blue);
+           box-shadow: 0 2px 8px rgba(30, 136, 229, 0.1);
+       }
+
+       /* --- SMALL INPUT --- */
+       .form-control-sm {
+           border-radius: 4px;
+           border: 1px solid var(--border-light);
+       }
+
+       .form-control-sm:focus {
+           border-color: var(--primary-blue);
+           box-shadow: 0 0 0 0.1rem rgba(30, 136, 229, 0.2);
+       }
+
+    </style>
+</body>
+
+</html>

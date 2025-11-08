@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Principal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <div th:fragment="navbar">
+        <nav class="navbar navbar-expand-lg navbar-custom">
+            <div class="container-fluid justify-content-center">
+                <a class="navbar-brand text-center" th:href="@{/proveedores/}">
+                    <img th:src="@{/carro.png}" alt="Logo" width="100" height="75" class="d-inline-block me-3">
+                    <h2 class="d-inline-block align-middle" >Gestión de Coches y Especificaciones Técnicas</h2>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <main class="main-container flex-grow-1">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-5 col-md-6 mx-3 mb-4">
+                    <div class="card card-custom">
+                        <div class="card-header card-header-custom text-center">
+                            <h4>Crear Coches</h4>
+                        </div>
+                        <div class="card-body text-center d-flex flex-column justify-content-center">
+                            <p class="text-muted mb-4">Registra nuevos coches en el sistema</p>
+                            <a th:href="@{/proveedores/nuevo}" class="btn btn-mango">Crear coche</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-6 mx-3 mb-4">
+                    <div class="card card-custom">
+                        <div class="card-header card-header-custom text-center">
+                            <h4>Observar coches</h4>
+                        </div>
+                        <div class="card-body text-center d-flex flex-column justify-content-center">
+                            <p class="text-muted mb-4">Consulta y gestiona coches existentes</p>
+                            <a th:href="@{/proveedores}" class="btn btn-mango">Visualizar Lista</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:fragment="footer">
+        <footer class="footer-custom text-center py-4 mt-auto">
+            <div class="container-fluid">
+                <img th:src="@{/carro.png}" alt="Logo" width="70" height="50" class="d-inline-block">
+                <p class="text-cream mb-0 mt-2">© 2025 Gestión de Coches y Especificaciones Técnicas</p>
+            </div>
+        </footer>
+    </div>
+
+
+    <style>
+
+        .footer-custom {
+        background: linear-gradient(90deg, #1565C0, #1E88E5); /* degradado azul */
+        border-top: 3px solid #0D47A1; /* línea azul oscuro superior */
+        color: #E3F2FD; /* texto azul muy claro */
+        padding: 1.5rem 0;
+    }
+
+    .footer-custom img {
+        filter: brightness(0) invert(1); /* hace que el logo se vea blanco si es oscuro */
+        opacity: 0.9;
+        transition: opacity 0.3s ease;
+    }
+
+    .footer-custom img:hover {
+        opacity: 1;
+    }
+
+    .footer-custom p {
+        color: #E3F2FD; /* texto en azul claro */
+        font-weight: 500;
+    }
+
+
+                .navbar-custom {
+                background-color: #1565C0 !important;
+                border-bottom: 3px solid #0D47A1 !important;
+                }
+                body {
+                background-color: #FAF3F3; /* Fondo suave rosado */
+                min-height: 100vh;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                      }
+
+            /* ----- Tarjetas ----- */
+            .card-custom {
+                border: 1px solid #F5B7B1;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                transition: all 0.3s ease;
+                background: #FFFFFF;
+                overflow: hidden;
+                height: 100%;
+            }
+
+            .card-custom:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+                border-color: #E74C3C; /* Rojo elegante */
+            }
+
+            /* ----- Encabezado de las tarjetas ----- */
+            .card-header-custom {
+                background-color: #E74C3C !important;
+                border-bottom: 2px solid #C0392B;
+                padding: 1.5rem;
+            }
+
+            .card-header-custom h4 {
+                color: #FFFFFF;
+                font-weight: 600;
+                margin: 0;
+                font-size: 1.25rem;
+            }
+
+            /* ----- Cuerpo de las tarjetas ----- */
+            .card-body {
+                padding: 2rem;
+                background: #FFFFFF;
+            }
+
+            /* ----- Botón principal (antes btn-mango) ----- */
+            .btn-mango {
+                background-color: #E74C3C;
+                border: 2px solid #E74C3C;
+                color: #FFFFFF;
+                padding: 12px 30px;
+                border-radius: 8px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+            }
+
+            .btn-mango:hover {
+                background-color: #C0392B;
+                border-color: #C0392B;
+                color: #FFFFFF;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+            }
+
+            /* ----- Contenedor principal ----- */
+            .main-container {
+                min-height: calc(100vh - 200px);
+                padding: 3rem 0;
+            }
+
+            /* ----- Textos ----- */
+            .text-muted {
+                color: #6C757D !important;
+            }
+
+            .text-cream {
+                color: #FFFFFF !important;
+            }
+
+    </style>
+
+</body>
+
+</html>
