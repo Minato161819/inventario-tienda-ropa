@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SchoolStock: sistema web de gestión de inventario escolar desarrollado con JavaScript, CSS y Bootstrap.">
+  <meta name="theme-color" content="#14213d">
+  <title>SchoolStock | Inventario escolar</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#dashboard" aria-label="SchoolStock inicio">
+        <span class="brand-mark">S</span>
+        <span><strong>SchoolStock</strong><small>GESTIÓN ESCOLAR</small></span>
+      </a>
+
+      <div class="sidebar-label">MENÚ PRINCIPAL</div>
+      <nav class="nav flex-column app-nav" aria-label="Navegación principal">
+        <a class="nav-link active" href="#dashboard" data-page="dashboard"><span class="nav-icon">▦</span> Panel general</a>
+        <a class="nav-link" href="#inventario" data-page="inventario"><span class="nav-icon">▤</span> Inventario <span class="nav-count" id="navItemCount">0</span></a>
+        <a class="nav-link" href="#movimientos" data-page="movimientos"><span class="nav-icon">⇄</span> Movimientos</a>
+        <a class="nav-link" href="#reportes" data-page="reportes"><span class="nav-icon">▥</span> Reportes</a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="school-card">
+          <div class="school-avatar">IE</div>
+          <div><strong>Institución Educativa</strong><small>Administración de recursos</small></div>
+        </div>
+        <div class="sidebar-note">Proyecto académico · 2026</div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-light sidebar-toggle d-lg-none" id="sidebarToggle" aria-label="Abrir menú">☰</button>
+          <div>
+            <div class="eyebrow" id="pageEyebrow">RESUMEN</div>
+            <h1 class="page-title" id="pageTitle">Panel general</h1>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span class="today-label" id="todayLabel"></span>
+          <div class="user-chip"><span class="user-avatar">AD</span><span class="d-none d-sm-inline">Administrador</span></div>
+        </div>
+      </header>
+
+      <div class="page-container">
+        <section class="page-view active" id="page-dashboard" aria-labelledby="pageTitle">
+          <div class="welcome-row">
+            <div>
+              <p class="muted mb-1">Bienvenido al sistema</p>
+              <h2 class="section-heading">Controla los recursos de tu institución.</h2>
+              <p class="muted mb-0">Consulta existencias, registra movimientos y mantén el inventario al día.</p>
+            </div>
+            <button class="btn btn-primary px-3" data-bs-toggle="modal" data-bs-target="#itemModal" id="quickAddItem">＋ Registrar artículo</button>
+          </div>
+
+          <div class="row g-3 stat-grid" id="dashboardStats"></div>
+
+          <div class="row g-3 mt-1">
+            <div class="col-xl-7">
+              <div class="panel-card h-100">
+                <div class="panel-header"><div><h3>Artículos con poco stock</h3><p>Productos que necesitan reposición</p></div><a href="#inventario" data-page="inventario" class="text-link">Ver inventario →</a></div>
+                <div id="lowStockTable"></div>
+              </div>
+            </div>
+            <div class="col-xl-5">
+              <div class="panel-card h-100">
+                <div class="panel-header"><div><h3>Distribución por categoría</h3><p>Unidades registradas por área</p></div></div>
+                <div id="categorySummary" class="category-summary"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card mt-4">
+            <div class="panel-header"><div><h3>Actividad reciente</h3><p>Últimos movimientos de inventario</p></div><a href="#movimientos" data-page="movimientos" class="text-link">Ver movimientos →</a></div>
+            <div id="recentMovements"></div>
+          </div>
+        </section>
+
+        <section class="page-view" id="page-inventario" aria-labelledby="pageTitle" hidden>
+          <div class="page-toolbar">
+            <div><h2 class="section-heading">Artículos registrados</h2><p class="muted mb-0">Administra los recursos y consulta sus existencias.</p></div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#itemModal" id="addItemButton">＋ Nuevo artículo</button>
+          </div>
+          <div class="panel-card">
+            <div class="filter-row">
+              <div class="search-box"><span>⌕</span><input type="search" class="form-control" id="inventorySearch" placeholder="Buscar por nombre, código o ubicación..." aria-label="Buscar artículos"></div>
+              <select class="form-select filter-select" id="categoryFilter" aria-label="Filtrar por categoría"><option value="">Todas las categorías</option></select>
+              <select class="form-select filter-select" id="stockFilter" aria-label="Filtrar por existencias"><option value="">Todos los estados</option><option value="normal">Stock normal</option><option value="low">Stock bajo</option><option value="zero">Agotado</option></select>
+              <button class="btn btn-outline-secondary" id="exportItemsButton">⇩ Exportar CSV</button>
+            </div>
+            <div id="inventoryTable"></div>
+            <div class="table-footer" id="inventoryCount"></div>
+          </div>
+        </section>
+
+        <section class="page-view" id="page-movimientos" aria-labelledby="pageTitle" hidden>
+          <div class="page-toolbar">
+            <div><h2 class="section-heading">Entradas y salidas</h2><p class="muted mb-0">Cada movimiento actualiza automáticamente las existencias.</p></div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#movementModal">＋ Registrar movimiento</button>
+          </div>
+          <div class="row g-3 mb-3" id="movementStats"></div>
+          <div class="panel-card">
+            <div class="filter-row">
+              <div class="search-box"><span>⌕</span><input type="search" class="form-control" id="movementSearch" placeholder="Buscar artículo o responsable..." aria-label="Buscar movimientos"></div>
+              <select class="form-select filter-select" id="movementTypeFilter" aria-label="Filtrar tipo"><option value="">Todos los movimientos</option><option value="Entrada">Entradas</option><option value="Salida">Salidas</option></select>
+              <button class="btn btn-outline-secondary" id="exportMovementsButton">⇩ Exportar CSV</button>
+            </div>
+            <div id="movementsTable"></div>
+            <div class="table-footer" id="movementCount"></div>
+          </div>
+        </section>
+
+        <section class="page-view" id="page-reportes" aria-labelledby="pageTitle" hidden>
+          <div class="page-toolbar"><div><h2 class="section-heading">Reportes del inventario</h2><p class="muted mb-0">Resumen de existencias y movimientos registrados.</p></div><button class="btn btn-outline-secondary" id="exportFullButton">⇩ Descargar inventario CSV</button></div>
+          <div class="row g-3" id="reportStats"></div>
+          <div class="row g-3 mt-1">
+            <div class="col-lg-6"><div class="panel-card h-100"><div class="panel-header"><div><h3>Existencias por categoría</h3><p>Total de unidades disponibles</p></div></div><div id="reportCategories"></div></div></div>
+            <div class="col-lg-6"><div class="panel-card h-100"><div class="panel-header"><div><h3>Estado del inventario</h3><p>Clasificación según el mínimo definido</p></div></div><div id="stockHealth"></div></div></div>
+          </div>
+          <div class="report-note mt-4"><strong>Nota:</strong> los reportes se calculan con los datos guardados en este navegador. Exporta los archivos CSV para conservar una copia o abrirlos en Excel.</div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal de artículos -->
+  <div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+      <form id="itemForm">
+        <div class="modal-header"><div><h2 class="modal-title fs-5" id="itemModalTitle">Registrar artículo</h2><p class="modal-subtitle mb-0">Completa la información del recurso escolar.</p></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+        <div class="modal-body">
+          <input type="hidden" id="itemId">
+          <div class="row g-3">
+            <div class="col-md-8"><label class="form-label" for="itemName">Nombre del artículo *</label><input class="form-control" id="itemName" required maxlength="80" placeholder="Ej. Computador portátil"></div>
+            <div class="col-md-4"><label class="form-label" for="itemCode">Código</label><input class="form-control" id="itemCode" placeholder="Automático" maxlength="20"></div>
+            <div class="col-md-6"><label class="form-label" for="itemCategory">Categoría *</label><select class="form-select" id="itemCategory" required><option value="">Selecciona una categoría</option><option>Tecnología</option><option>Mobiliario</option><option>Deportes</option><option>Laboratorio</option><option>Biblioteca</option><option>Papelería</option><option>Otros</option></select></div>
+            <div class="col-md-6"><label class="form-label" for="itemLocation">Ubicación *</label><select class="form-select" id="itemLocation" required><option value="">Selecciona una ubicación</option><option>Sala de informática</option><option>Biblioteca</option><option>Laboratorio</option><option>Almacén</option><option>Salón de clase</option><option>Oficina administrativa</option><option>Patio / Cancha</option></select></div>
+            <div class="col-md-4"><label class="form-label" for="itemQuantity">Cantidad inicial *</label><input type="number" class="form-control" id="itemQuantity" min="0" step="1" value="1" required></div>
+            <div class="col-md-4"><label class="form-label" for="itemMinimum">Stock mínimo *</label><input type="number" class="form-control" id="itemMinimum" min="0" step="1" value="3" required></div>
+            <div class="col-md-4"><label class="form-label" for="itemUnit">Unidad *</label><select class="form-select" id="itemUnit" required><option>unidades</option><option>cajas</option><option>paquetes</option><option>pares</option><option>libros</option><option>metros</option></select></div>
+            <div class="col-md-6"><label class="form-label" for="itemCondition">Estado</label><select class="form-select" id="itemCondition"><option>Bueno</option><option>Regular</option><option>En mantenimiento</option><option>Dañado</option></select></div>
+            <div class="col-md-6"><label class="form-label" for="itemDescription">Descripción</label><input class="form-control" id="itemDescription" maxlength="140" placeholder="Detalles adicionales (opcional)"></div>
+          </div>
+          <div class="form-hint mt-3" id="itemFormHint">Los campos con * son obligatorios. La cantidad inicial quedará registrada como una entrada.</div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn btn-primary">Guardar artículo</button></div>
+      </form>
+    </div></div>
+  </div>
+
+  <!-- Modal de movimientos -->
+  <div class="modal fade" id="movementModal" tabindex="-1" aria-labelledby="movementModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+      <form id="movementForm">
+        <div class="modal-header"><div><h2 class="modal-title fs-5" id="movementModalTitle">Registrar movimiento</h2><p class="modal-subtitle mb-0">Registra una entrada o salida de recursos.</p></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+        <div class="modal-body"><div class="row g-3">
+          <div class="col-12"><label class="form-label" for="movementItem">Artículo *</label><select class="form-select" id="movementItem" required></select><div class="form-text" id="movementAvailable"></div></div>
+          <div class="col-md-6"><label class="form-label" for="movementType">Tipo *</label><select class="form-select" id="movementType" required><option value="Entrada">Entrada</option><option value="Salida">Salida</option></select></div>
+          <div class="col-md-6"><label class="form-label" for="movementQuantity">Cantidad *</label><input type="number" class="form-control" id="movementQuantity" min="1" step="1" value="1" required></div>
+          <div class="col-12"><label class="form-label" for="movementResponsible">Responsable *</label><input class="form-control" id="movementResponsible" required maxlength="60" placeholder="Nombre de quien realiza el movimiento"></div>
+          <div class="col-12"><label class="form-label" for="movementNote">Observación</label><textarea class="form-control" id="movementNote" rows="2" maxlength="180" placeholder="Motivo o detalle del movimiento"></textarea></div>
+        </div></div>
+        <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn btn-primary">Guardar movimiento</button></div>
+      </form>
+    </div></div>
+  </div>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3"><div id="appToast" class="toast align-items-center border-0" role="status" aria-live="polite" aria-atomic="true"><div class="d-flex"><div class="toast-body" id="toastMessage">Listo.</div><button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button></div></div></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
